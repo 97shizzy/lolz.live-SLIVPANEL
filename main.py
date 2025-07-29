@@ -179,7 +179,7 @@ class LolzPostGUI(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Sliv 18+ PANEL|Created by: @rasez TG: @N0S3NSE for Lolz.live")
-        self.setMinimumSize(920, 820)
+        self.setMinimumSize(920, 935)
         self.setStyleSheet("""
             QWidget {
                 background-color: #1b0000;
@@ -237,108 +237,146 @@ class LolzPostGUI(QWidget):
         layout = QVBoxLayout()
         layout.setContentsMargins(20, 20, 20, 20)
         layout.setSpacing(15)
-        
     
         menu_btn = QPushButton("МЕНЮ<3")
         menu_btn.setFont(QFont("Segoe UI", 12, QFont.Bold))
         menu_btn.setFixedWidth(120)
         menu_btn.clicked.connect(self.show_menu)
-        
+    
         top_layout = QHBoxLayout()
         top_layout.addWidget(menu_btn)
         top_layout.addStretch()
-        
-
+    
         title_label = QLabel("Заголовок темы")
         title_label.setFont(QFont("Segoe UI", 16, QFont.Bold))
-        
+    
         self.title_edit = QLineEdit()
         self.title_edit.setFont(QFont("Segoe UI", 14))
-        
+    
         post_header_label = QLabel("Текст в теме")
         post_header_label.setFont(QFont("Segoe UI", 16, QFont.Bold))
-        
+    
         self.post_header_edit = QLineEdit()
         self.post_header_edit.setFont(QFont("Segoe UI", 14))
-        
+    
         self.color_btn = QPushButton("Выбрать цвет текста")
         self.color_btn.setFont(QFont("Segoe UI", 12))
         self.color_btn.clicked.connect(self.choose_color)
         self.update_color_button()
-        
-        
+    
         mega_label = QLabel("Ссылка на Mega.nz")
         mega_label.setFont(QFont("Segoe UI", 16, QFont.Bold))
-        
+    
         self.mega_edit = QLineEdit()
         self.mega_edit.setFont(QFont("Segoe UI", 14))
-        
+    
         self.upload_btn = QPushButton("Загрузить папку на Mega")
         self.upload_btn.setFont(QFont("Segoe UI", 12))
         self.upload_btn.clicked.connect(self.upload_to_mega)
-        
+    
         mega_layout = QHBoxLayout()
         mega_layout.addWidget(self.mega_edit, 1)
         mega_layout.addWidget(self.upload_btn)
-        
-        
+    
         likes_label = QLabel("Лимит лайков")
         likes_label.setFont(QFont("Segoe UI", 16, QFont.Bold))
-        
+    
         self.likes_edit = QLineEdit()
         self.likes_edit.setFont(QFont("Segoe UI", 14))
         self.likes_edit.setPlaceholderText("11923812981273198231730938")
-        
-        # Prefixes
+    
+    # Prefixes
         prefix_label = QLabel("Выберите префиксы в теме")
         prefix_label.setFont(QFont("Segoe UI", 16, QFont.Bold))
-        
+    
         self.prefix_checkboxes = []
         prefix_grid = QGridLayout()
         prefix_grid.setHorizontalSpacing(20)
         prefix_grid.setVerticalSpacing(10)
-        
+    
         for i, prefix in enumerate(PREFIXES):
             checkbox = QCheckBox(prefix["prefix_title"])
             checkbox.setFont(QFont("Segoe UI", 12, QFont.Bold))
             checkbox.setStyleSheet("""
-                QCheckBox {
-                    color: #ff6666;
-                    spacing: 8px;
-                }
-                QCheckBox::indicator {
-                    width: 20px;
-                    height: 20px;
-                }
-                QCheckBox::indicator:unchecked {
-                    border: 2px solid #cc2222;
-                    background-color: #330000;
-                    border-radius: 5px;
-                }
-                QCheckBox::indicator:checked {
-                    background-color: #ff4444;
-                    border: 2px solid #ff8888;
-                    border-radius: 5px;
-                }
-            """)
+            QCheckBox {
+                color: #ff6666;
+                spacing: 8px;
+            }
+            QCheckBox::indicator {
+                width: 20px;
+                height: 20px;
+            }
+            QCheckBox::indicator:unchecked {
+                border: 2px solid #cc2222;
+                background-color: #330000;
+                border-radius: 5px;
+            }
+            QCheckBox::indicator:checked {
+                background-color: #ff4444;
+                border: 2px solid #ff8888;
+                border-radius: 5px;
+            }
+        """)
             self.prefix_checkboxes.append((checkbox, prefix["prefix_id"], prefix["prefix_title"]))
             prefix_grid.addWidget(checkbox, i // 3, i % 3)
-        
+    
         prefix_widget = QWidget()
         prefix_widget.setLayout(prefix_grid)
-        
+    
         prefix_scroll = QScrollArea()
         prefix_scroll.setWidgetResizable(True)
         prefix_scroll.setWidget(prefix_widget)
         prefix_scroll.setFixedHeight(150)
+    
+    
+        self.schedule_checkbox = QCheckBox("Отложить публикацию темы")
+        self.schedule_checkbox.setFont(QFont("Segoe UI", 12, QFont.Bold))
+        self.schedule_checkbox.setStyleSheet("""
+        QCheckBox {
+            color: #ff6666;
+            spacing: 8px;
+        }
+        QCheckBox::indicator {
+            width: 20px;
+            height: 20px;
+        }
+        QCheckBox::indicator:unchecked {
+            border: 2px solid white;
+            background-color: #330000;
+            border-radius: 5px;
+        }
+        QCheckBox::indicator:checked {
+            background-color: #ff4444;
+            border: 2px solid yellow;
+            border-radius: 5px;
+        }
+    """)
+        schedule_layout = QHBoxLayout()
+        schedule_layout.setSpacing(10)
         
+        self.date_edit = QLineEdit()
+        self.date_edit.setFont(QFont("Segoe UI", 12))
+        self.date_edit.setPlaceholderText("ДД-ММ-ГГГГ")
+        self.date_edit.setFixedWidth(150)
         
+        self.time_edit = QLineEdit()
+        self.time_edit.setFont(QFont("Segoe UI", 12))
+        self.time_edit.setPlaceholderText("ЧЧ:ММ")
+        self.time_edit.setFixedWidth(100)
+
+        schedule_layout.addWidget(QLabel("Дата:"))
+        schedule_layout.addWidget(self.date_edit)
+        schedule_layout.addWidget(QLabel("Время:"))
+        schedule_layout.addWidget(self.time_edit)
+        schedule_layout.addStretch()
+        
+        self.schedule_widget = QWidget()
+        self.schedule_widget.setLayout(schedule_layout)
         self.send_btn = QPushButton("Запостить тему")
         self.send_btn.setFont(QFont("Segoe UI", 14, QFont.Bold))
         self.send_btn.setFixedHeight(50)
         self.send_btn.clicked.connect(self.send_request)
-        
-        
+    
         layout.addLayout(top_layout)
         layout.addWidget(title_label)
         layout.addWidget(self.title_edit)
@@ -351,9 +389,37 @@ class LolzPostGUI(QWidget):
         layout.addWidget(self.likes_edit)
         layout.addWidget(prefix_label)
         layout.addWidget(prefix_scroll)
+        layout.addWidget(self.schedule_checkbox)
+        layout.addWidget(self.schedule_widget)
         layout.addWidget(self.send_btn)
-        
+    
         self.setLayout(layout)
+    
+    def toggle_schedule_fields(self, state):
+        self.schedule_widget.setEnabled(state == Qt.Checked)
+        self.date_edit.setEnabled(state == Qt.Checked)
+        self.time_edit.setEnabled(state == Qt.Checked)
+    
+    def validate_schedule(self):
+        if not self.schedule_checkbox.isChecked():
+            return True, None, None
+        
+        date_str = self.date_edit.text().strip()
+        time_str = self.time_edit.text().strip()
+        
+        try:
+            datetime.strptime(date_str, "%d-%m-%Y")
+            datetime.strptime(time_str, "%H:%M")
+            return True, date_str, time_str
+        except ValueError:
+            QMessageBox.warning(
+                self, 
+                "Ошибка формата", 
+                "Проверьте формат даты и времени!\n"
+                "Дата: ДД-ММ-ГГГГ (например, 30-07-2025)\n"
+                "Время: ЧЧ:ММ (например, 14:30)"
+            )
+            return False, None, None
 
     def update_color_button(self):
         self.color_btn.setStyleSheet(f"""
@@ -481,6 +547,12 @@ class LolzPostGUI(QWidget):
         if not selected_prefixes:
             QMessageBox.warning(self, "Ошибка", "Выберите хотя бы один префикс!")
             return
+            
+        
+        schedule_valid, schedule_date, schedule_time = self.validate_schedule()
+        if not schedule_valid:
+            return
+            
         prefix_part = "".join([f"&prefix_id[]={p[0]}" for p in selected_prefixes])
         encoded_title = requests.utils.quote(title)
 
@@ -488,7 +560,7 @@ class LolzPostGUI(QWidget):
             f"https://api.lolz.live/threads?"
             f"forum_id=775&title={encoded_title}"
             f"{prefix_part}"
-            "&tags=%D0%A1%D0%BB%D0%B8%D0%B2%D1%8B,18%2B,%D0%90%D0%BB%D1%8C%D1%82%D1%83%D1%88%D0%BA%D0%B8,%D0%A8%D0%BB%D1%8E%D1%88%D0%BA%D0%B8"
+            "&tags=%D0%A1%D0%BB%D0%B8%D0%B2%D1%8B,18%2B,%D0%90%D0%BB%D1%8C%D1%82%D1%83%D1%88%D0%BA%D0%B8,%D0%A8%D0%BB%D0%BE%D1%88%D0%BA%D0%B8"
             "&allow_ask_hidden_content=true"
         )
 
@@ -503,23 +575,26 @@ class LolzPostGUI(QWidget):
             button_text=self.button_text
         )
 
-        payload = {"post_body": post_body}
+        payload = {
+            "post_body": post_body,
+            "enable_schedule": self.schedule_checkbox.isChecked()
+        }
+        
+        if self.schedule_checkbox.isChecked():
+            payload["schedule_date"] = schedule_date
+            payload["schedule_time"] = schedule_time
+
         headers = {
             "accept": "application/json",
             "content-type": "application/json",
-            "authorization": self.bearer_token  # Используем токен из настроек
-            }
-    
+            "authorization": self.bearer_token
+        }
     
         if not self.bearer_token.startswith("Bearer "):
             headers["authorization"] = "Bearer " + self.bearer_token.strip()
     
         try:
-            response = requests.post(
-            url,
-            json={"post_body": post_body},
-            headers=headers
-        )
+            response = requests.post(url, json=payload, headers=headers)
     
             if response.status_code == 401:
                 QMessageBox.critical(
@@ -532,7 +607,15 @@ class LolzPostGUI(QWidget):
                 return
         
             elif response.status_code in [200, 201]:
-                QMessageBox.information(self, "Успех", "Тема успешно создана!")
+                if self.schedule_checkbox.isChecked():
+                    QMessageBox.information(
+                        self, 
+                        "Успех", 
+                        f"Тема успешно запланирована на {schedule_date} {schedule_time}!"
+                    )
+                else:
+                    QMessageBox.information(self, "Успех", "Тема успешно создана!")
+                
                 self.save_log(title, mega_link, post_body, likes, selected_prefixes)
         
             else:
@@ -544,16 +627,16 @@ class LolzPostGUI(QWidget):
 
         except requests.exceptions.RequestException as e:
             QMessageBox.critical(
-            self,
-            "Ошибка соединения",
-            f"Не удалось отправить запрос:\n{str(e)}"
-        )
+                self,
+                "Ошибка соединения",
+                f"Не удалось отправить запрос:\n{str(e)}"
+            )
         except Exception as e:
             QMessageBox.critical(
-            self,
-            "Неизвестная ошибка",
-            f"Произошла ошибка:\n{str(e)}"
-        )
+                self,
+                "Неизвестная ошибка",
+                f"Произошла ошибка:\n{str(e)}"
+            )
 
     def save_log(self, title, mega, header, limit, prefixes):
         data = {
@@ -565,6 +648,12 @@ class LolzPostGUI(QWidget):
             "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "color": f"rgb({self.color_r},{self.color_g},{self.color_b})"
         }
+    
+
+        if self.schedule_checkbox.isChecked():
+            data["scheduled_date"] = self.date_edit.text()
+            data["scheduled_time"] = self.time_edit.text()
+    
         try:
             with open("log.json", "a", encoding="utf-8") as f:
                 f.write(json.dumps(data, ensure_ascii=False, indent=4))

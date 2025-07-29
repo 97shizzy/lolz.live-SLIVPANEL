@@ -15,7 +15,7 @@ Sliv 18+ Panel - это профессиональный инструмент д
 
     Адаптивная верстка элементов
 
-https://i.imgur.com/placeholder.png (пример интерфейса)
+[https://i.imgur.com/placeholder.png](https://imgur.com/a/CYfRIa7) (пример интерфейса)
 ⚙️ Технические особенности
 python
 
